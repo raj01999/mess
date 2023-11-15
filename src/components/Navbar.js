@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
 import "./Navbar.css";
 import { IconContext } from "react-icons";
+import { useStateValue } from "../context/StateProvider";
+import { actionType } from "../context/reducer";
 
 function Navbar() {
   const [sidebar, setSidebar] = useState(false);
-  const [info, setInfo] = useState("meal");
-  console.log(info);
+  const [state, dispatch] = useStateValue();
+  const location = useLocation();
 
   const showSidebar = () => setSidebar(!sidebar);
 
@@ -21,36 +23,37 @@ function Navbar() {
             <FaIcons.FaBars onClick={showSidebar} />
           </Link>
 
-          {/* Rounded switch  */}
-          <div className="right-menu">
-            <p
-              style={{
-                color: " rgb(13, 193, 206)",
-                fontWeight: "bold",
-                marginRight: "5px",
-              }}
-            >
-              Meal
-            </p>
-            <label className="switch">
-              <input
-                type="checkbox"
-                onClick={(e) => {
-                  setInfo(info === "meal" ? "fund" : "meal");
+          {location.pathname === "/reports" && (
+            <div className="right-menu">
+              <p
+                style={{
+                  color: " rgb(13, 193, 206)",
+                  fontWeight: "bold",
+                  marginRight: "5px",
                 }}
-              />
-              <span className="slider round"></span>
-            </label>
-            <p
-              style={{
-                color: "#2196f3",
-                fontWeight: "bold",
-                marginLeft: "5px",
-              }}
-            >
-              Fund
-            </p>
-          </div>
+              >
+                Meal
+              </p>
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  onClick={(e) => {
+                    dispatch({ type: actionType.CHANGE_INFO });
+                  }}
+                />
+                <span className="slider round"></span>
+              </label>
+              <p
+                style={{
+                  color: "#2196f3",
+                  fontWeight: "bold",
+                  marginLeft: "5px",
+                }}
+              >
+                Fund
+              </p>
+            </div>
+          )}
         </div>
         <nav className={sidebar ? "nav-menu active" : "nav-menu"}>
           <ul className="nav-menu-items" onClick={showSidebar}>

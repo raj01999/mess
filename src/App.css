@@ -10,6 +10,7 @@
 .home,
 .members,
 .support,
+.messages,
 .products {
   display: flex;
   height: 90vh;

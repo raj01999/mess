@@ -9,11 +9,12 @@ import { useStateValue } from "../context/StateProvider";
 import { actionType } from "../context/reducer";
 
 function Navbar() {
-  const [sidebar, setSidebar] = useState(false);
   const [state, dispatch] = useStateValue();
   const location = useLocation();
 
-  const showSidebar = () => setSidebar(!sidebar);
+  const showSidebar = () => {
+    dispatch({ type: actionType.CHANGE_SIDEBAR, value: !state.sidebar });
+  };
 
   return (
     <>
@@ -25,37 +26,37 @@ function Navbar() {
 
           {location.pathname === "/reports" && (
             <div className="right-menu">
-              <p
+              <span
                 style={{
                   color: " rgb(13, 193, 206)",
-                  fontWeight: "bold",
                   marginRight: "5px",
                 }}
               >
                 Meal
-              </p>
+              </span>
               <label className="switch">
                 <input
                   type="checkbox"
+                  checked={state.info === "meal" ? false : true}
+                  onChange={(e) => {}}
                   onClick={(e) => {
                     dispatch({ type: actionType.CHANGE_INFO });
                   }}
                 />
                 <span className="slider round"></span>
               </label>
-              <p
+              <span
                 style={{
                   color: "#2196f3",
-                  fontWeight: "bold",
                   marginLeft: "5px",
                 }}
               >
                 Fund
-              </p>
+              </span>
             </div>
           )}
         </div>
-        <nav className={sidebar ? "nav-menu active" : "nav-menu"}>
+        <nav className={state.sidebar ? "nav-menu active" : "nav-menu"}>
           <ul className="nav-menu-items" onClick={showSidebar}>
             <li className="navbar-toggle">
               <Link to="#" className="menu-bars">

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useStateValue } from "../context/StateProvider";
+import MealTable from "../components/MealTable";
+import FundTable from "../components/FundTable";
 
 const Fund = [
   { date: "01/12/23", amount: { currency: "INR", value: 13 } },
@@ -26,6 +28,7 @@ const Meal = [
 ];
 
 function Reports() {
+  // eslint-disable-next-line
   const [state, dispatch] = useStateValue();
   const [meal, setMeal] = useState([]);
   const [fund, setFund] = useState([]);
@@ -43,7 +46,7 @@ function Reports() {
   return (
     <div className="reports">
       <div className="reports-header">
-        <h3>{state.info === "meal" ? "Your Meals:" : "Your Deposit:"}</h3>
+        <h4>{state.info === "meal" ? "Your Meals:" : "Your Deposit:"}</h4>
         <input
           className="reports-month-input"
           type="month"
@@ -56,95 +59,11 @@ function Reports() {
         />
       </div>
 
-      <table id="customers">
-        {state.info === "meal" ? (
-          <thead>
-            <tr>
-              <th rowSpan="2">Date</th>
-              <th colSpan="2">Meal</th>
-              <th colSpan="2">Guest</th>
-            </tr>
-            <tr>
-              <th>Day</th>
-              <th>Night</th>
-              <th>Day</th>
-              <th>Night</th>
-            </tr>
-          </thead>
-        ) : (
-          <thead>
-            <tr>
-              <th rowSpan="2">Date</th>
-              <th colSpan="2">Amount</th>
-            </tr>
-            <tr>
-              <th>Currency</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-        )}
-
-        {state.info === "meal" ? (
-          <tbody>
-            {meal.map((ele, idx) => {
-              return (
-                <tr key={idx}>
-                  <td>{ele.date}</td>
-                  <td>{ele.amount.day}</td>
-                  <td>{ele.amount.night}</td>
-                  <td>{ele.guest.day}</td>
-                  <td>{ele.guest.night}</td>
-                </tr>
-              );
-            })}
-
-            <tr>
-              <td>Total:</td>
-              <td colSpan="2">
-                {meal.reduce(
-                  (previousValue, currentValue) =>
-                    previousValue +
-                    currentValue.amount.day +
-                    currentValue.amount.night,
-                  0
-                )}
-              </td>
-              <td colSpan="2">
-                {meal.reduce(
-                  (previousValue, currentValue) =>
-                    previousValue +
-                    currentValue.guest.day +
-                    currentValue.guest.night,
-                  0
-                )}
-              </td>
-            </tr>
-          </tbody>
-        ) : (
-          <tbody>
-            {fund.map((ele, idx) => {
-              return (
-                <tr key={idx}>
-                  <td>{ele.date}</td>
-                  <td>{ele.amount.currency}</td>
-                  <td>{ele.amount.value}</td>
-                </tr>
-              );
-            })}
-            <tr>
-              <td>Total:</td>
-              <td> {fund[0]?.amount?.currency}</td>
-              <td>
-                {fund.reduce(
-                  (previousValue, currentValue) =>
-                    previousValue + currentValue.amount.value,
-                  0
-                )}
-              </td>
-            </tr>
-          </tbody>
-        )}
-      </table>
+      {state.info === "meal" ? (
+        <MealTable data={meal} />
+      ) : (
+        <FundTable data={fund} />
+      )}
     </div>
   );
 }

@@ -24,11 +24,12 @@ function Navbar() {
             <FaIcons.FaBars onClick={showSidebar} />
           </Link>
 
-          {location.pathname === "/reports" && (
+          {(location.pathname === "/reports" ||
+            location.pathname === "/manage") && (
             <div className="right-menu">
               <span
                 style={{
-                  color: " rgb(13, 193, 206)",
+                  color: "white",
                   marginRight: "5px",
                 }}
               >
@@ -47,7 +48,7 @@ function Navbar() {
               </label>
               <span
                 style={{
-                  color: "#2196f3",
+                  color: "white",
                   marginLeft: "5px",
                 }}
               >

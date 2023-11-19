@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import "./Reports.css";
 import { useStateValue } from "../context/StateProvider";
 import MealTable from "../components/MealTable";
 import FundTable from "../components/FundTable";
+import { Container, Card, Form } from "react-bootstrap";
 
 const Fund = [
   { date: "01/12/23", amount: { currency: "INR", value: 13 } },
@@ -35,7 +37,6 @@ function Reports() {
   const [month, setMonth] = useState("2023-11");
 
   useEffect(() => {
-    console.log(state.info);
     if (state.info === "meal") {
       setMeal(Meal);
     } else if (state.info === "fund") {
@@ -44,27 +45,35 @@ function Reports() {
   }, [state.info]);
 
   return (
-    <div className="reports">
-      <div className="reports-header">
-        <h4>{state.info === "meal" ? "Your Meals:" : "Your Deposit:"}</h4>
-        <input
-          className="reports-month-input"
-          type="month"
-          name="month"
-          id="month"
-          value={month}
-          onChange={(e) => {
-            setMonth(e.target.value);
-          }}
-        />
-      </div>
+    <Container
+      className="d-flex align-items-center justify-content-center"
+      style={{ minHeight: "80vh", position: "relative", top: "85px" }}
+    >
+      <div className="w-100" style={{ maxWidth: "400px" }}>
+        <Card>
+          <Card.Body>
+            <h2 className="text-center mb-4">
+              {state.info === "meal" ? "Your Meals" : "Your Deposit"}
+            </h2>
 
-      {state.info === "meal" ? (
-        <MealTable data={meal} />
-      ) : (
-        <FundTable data={fund} />
-      )}
-    </div>
+            <Form.Control
+              type="month"
+              required
+              value={month}
+              onChange={(e) => {
+                setMonth(e.target.value);
+              }}
+            />
+
+            {state.info === "meal" ? (
+              <MealTable data={meal} />
+            ) : (
+              <FundTable data={fund} />
+            )}
+          </Card.Body>
+        </Card>
+      </div>
+    </Container>
   );
 }
 

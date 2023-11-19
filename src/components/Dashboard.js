@@ -14,8 +14,8 @@ export default function Dashboard() {
 
     try {
       await state.func.logout();
-      localStorage.removeItem("currentUser");
       dispatch({ type: actionType.SET_USER, user: null });
+      localStorage.removeItem("currentUser");
       navigate("/login");
     } catch (err) {
       setError(err.message);
@@ -33,12 +33,29 @@ export default function Dashboard() {
             <Card.Body>
               <h2 className="text-center mb-4">Profile</h2>
               {error && <Alert variant="danger">{error}</Alert>}
-              <Form.Control
-                type="email"
-                required
-                disabled
-                defaultValue={state.currentUser?.email}
-              />
+              <Form.Group>
+                <Form.Label>Your Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  required
+                  disabled
+                  defaultValue={state.currentUser?.email}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Your Mess</Form.Label>
+                <Form.Control
+                  type="text"
+                  required
+                  value={
+                    state.tempUser?.messName
+                      ? state.tempUser?.messName
+                      : "Please ask your manager to add you"
+                  }
+                  disabled
+                />
+              </Form.Group>
+
               <Link to="/update-profile" className="btn btn-primary w-100 mt-3">
                 Update Profile
               </Link>

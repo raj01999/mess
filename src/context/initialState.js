@@ -13,6 +13,7 @@ const initialState = {
   sidebar: false,
   info: "meal",
   currentUser: getUser(),
+  tempUser: null,
 };
 
 export default initialState;

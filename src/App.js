@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Reports from "./pages/Reports";
-import Products from "./pages/Products";
+import Manage from "./pages/Manage";
 import Members from "./pages/Members";
 import Suport from "./pages/Support";
 import Messages from "./pages/Messages";
@@ -42,6 +42,22 @@ function App() {
     };
   }, [state.sidebar]);
 
+  useEffect(() => {
+    if (state.currentUser) {
+      state.func
+        .getUserByEmail(state.currentUser?.email)
+        .then((res) => {
+          dispatch({
+            type: actionType.SET_TEMP_USER,
+            tempUser: res[0],
+          });
+        })
+        .catch((err) => {
+          console.log("err:", err);
+        });
+    }
+  }, [state.currentUser?.email]);
+
   if (state.currentUser && !state.currentUser.emailVerified) {
     return (
       <>
@@ -66,8 +82,8 @@ function App() {
           element={state.currentUser ? <Reports /> : <Navigate to="/login" />}
         />
         <Route
-          path="/products"
-          element={state.currentUser ? <Products /> : <Navigate to="/login" />}
+          path="/manage"
+          element={state.currentUser ? <Manage /> : <Navigate to="/login" />}
         />
         <Route
           path="/members"

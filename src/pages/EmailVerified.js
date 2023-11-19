@@ -1,16 +1,31 @@
 import React, { useState } from "react";
 import { Form, Card, Container, Button, Alert } from "react-bootstrap";
 import { useStateValue } from "../context/StateProvider";
+import { actionType } from "../context/reducer";
+import { useNavigate } from "react-router-dom";
 
 const EmailVerified = () => {
   const [state, dispatch] = useStateValue();
   const [message, setMessage] = useState(state.currentUser.emailVerified);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     state.func.emailVerification(state.currentUser);
     setMessage("Please check your email & verify your account");
   };
+
+  async function handleLogout() {
+    try {
+      await state.func.logout();
+      dispatch({ type: actionType.SET_USER, user: null });
+      localStorage.removeItem("currentUser");
+      navigate("/login");
+      window.location.reload();
+    } catch (err) {
+      console.log("err: ", err);
+    }
+  }
 
   return (
     <Container
@@ -37,6 +52,11 @@ const EmailVerified = () => {
             </Form>
           </Card.Body>
         </Card>
+        <div className="w-100 text-center mt-2">
+          <Button variant="link" onClick={handleLogout}>
+            Log Out
+          </Button>
+        </div>
       </div>
     </Container>
   );

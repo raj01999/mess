@@ -1,5 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Container, Form, Card, Button, Alert } from "react-bootstrap";
+import { useStateValue } from "../context/StateProvider";
 
 function Manage() {
   const [message, setMessage] = useState("");
@@ -8,6 +9,8 @@ function Manage() {
   const memberRef = useRef();
   const amountRef = useRef();
   const [date, setDate] = useState("2023-11-18");
+  const [state, dispatch] = useStateValue();
+  const [members, setMembers] = useState([]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -15,6 +18,17 @@ function Manage() {
     const amount = amountRef.current.value;
     console.log(member, amount, date);
   };
+
+  useEffect(() => {
+    const getMembers = async () => {
+      const data = await state.func.getUsersByMessId(state.tempUser?.messId);
+      setMembers(data);
+    };
+
+    if (state.tempUser && state.tempUser.messId) {
+      getMembers();
+    }
+  }, [state.tempUser?.messId]);
 
   return (
     <Container
@@ -32,9 +46,11 @@ function Manage() {
                 <Form.Label>Member</Form.Label>
                 <Form.Select ref={memberRef}>
                   <option value="0">Select an member</option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                  {members.map((member) => (
+                    <option key={member.email} value={member.email}>
+                      {member.name}
+                    </option>
+                  ))}
                 </Form.Select>
               </Form.Group>
               <Form.Group id="fund-amount">

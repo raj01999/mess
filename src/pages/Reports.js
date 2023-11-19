@@ -4,11 +4,12 @@ import { useStateValue } from "../context/StateProvider";
 import MealTable from "../components/MealTable";
 import FundTable from "../components/FundTable";
 import { Container, Card, Form } from "react-bootstrap";
+import { useSearchParams } from "react-router-dom";
 
 const Fund = [
-  { date: "01/12/23", amount: { currency: "INR", value: 13 } },
-  { date: "01/12/23", amount: { currency: "INR", value: 14 } },
-  { date: "01/12/23", amount: { currency: "INR", value: 14 } },
+  { month: "2024-11", date: 1, amount: 14 },
+  { month: "2024-11", date: 2, amount: 44 },
+  { month: "2024-11", date: 3, amount: 16 },
 ];
 
 const Meal = [
@@ -35,6 +36,9 @@ function Reports() {
   const [meal, setMeal] = useState([]);
   const [fund, setFund] = useState([]);
   const [month, setMonth] = useState("2023-11");
+  const [searchParams] = useSearchParams();
+  const qEmail = searchParams.get("user");
+  console.log(qEmail);
 
   useEffect(() => {
     if (state.info === "meal") {

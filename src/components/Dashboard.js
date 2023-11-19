@@ -17,8 +17,9 @@ export default function Dashboard() {
       dispatch({ type: actionType.SET_USER, user: null });
       localStorage.removeItem("currentUser");
       navigate("/login");
+      window.location.reload();
     } catch (err) {
-      setError(err.message);
+      setError(err.code);
     }
   }
 
@@ -33,6 +34,15 @@ export default function Dashboard() {
             <Card.Body>
               <h2 className="text-center mb-4">Profile</h2>
               {error && <Alert variant="danger">{error}</Alert>}
+              <Form.Group>
+                <Form.Label>Your Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  required
+                  disabled
+                  value={state.tempUser?.name}
+                />
+              </Form.Group>
               <Form.Group>
                 <Form.Label>Your Email</Form.Label>
                 <Form.Control
@@ -50,7 +60,7 @@ export default function Dashboard() {
                   value={
                     state.tempUser?.messName
                       ? state.tempUser?.messName
-                      : "Please ask your manager to add you"
+                      : "Connect with mess manager"
                   }
                   disabled
                 />

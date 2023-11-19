@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import * as FaIcons from "react-icons/fa";
 import {
   Container,
@@ -10,31 +10,52 @@ import {
   Image,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useStateValue } from "../context/StateProvider";
 
 const Members = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [loading, seetLoading] = useState(true);
-  const [members, setMembers] = useState([
-    {
-      name: "raj",
-      email: "sarafraj01999@gmail.com",
-      img: "https://i.guim.co.uk/img/media/bdf23d7b1bbb200cf72ae0c22f051bf926445b20/1_0_5075_3046/master/5075.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=8afc733c3bb5f5509f44d4feaf68a5a3",
-    },
-    {
-      name: "raj",
-      email: "sarafraj01999@gmail.com",
-      img: "https://i.guim.co.uk/img/media/bdf23d7b1bbb200cf72ae0c22f051bf926445b20/1_0_5075_3046/master/5075.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=8afc733c3bb5f5509f44d4feaf68a5a3",
-    },
-    {
-      name: "raj",
-      email: "sarafraj01999@gmail.com",
-      img: "https://i.guim.co.uk/img/media/bdf23d7b1bbb200cf72ae0c22f051bf926445b20/1_0_5075_3046/master/5075.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=8afc733c3bb5f5509f44d4feaf68a5a3",
-    },
-  ]);
+  const [loading, seetLoading] = useState(false);
+  const [members, setMembers] = useState([]);
   const newUserRef = useRef();
+  const [state, dispatch] = useStateValue();
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setMessage("");
+    try {
+      const oldUser = await state.func.getUserByEmail(newUserRef.current.value);
+      if (!oldUser) {
+        setError("User not registered");
+      } else if (oldUser.type === "manager") {
+        setError("User is an manager");
+      } else if (oldUser.messId) {
+        setError("User part of a mess");
+      } else {
+        await state.func.setUser({
+          ...oldUser,
+          messId: state.tempUser?.messId,
+          messName: state.tempUser?.messName,
+        });
+
+        setMessage("User added");
+      }
+    } catch (err) {
+      setError(err.code);
+    }
+  };
+
+  useEffect(() => {
+    const getMembers = async () => {
+      const data = await state.func.getUsersByMessId(state.tempUser?.messId);
+      setMembers(data);
+    };
+
+    if (state.tempUser && state.tempUser.messId) {
+      getMembers();
+    }
+  }, [state.tempUser?.messId, message]);
 
   return (
     <Container
@@ -54,17 +75,10 @@ const Members = () => {
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
                   <span>
-                    <Image
-                      src={member.img}
-                      style={{
-                        width: "20px",
-                        marginRight: "10px",
-                        borderRadius: "100%",
-                      }}
-                    />
+                    <FaIcons.FaUser style={{ marginRight: "10px" }} />
                     {member.name}
                   </span>
-                  <Link to={"/reports"}>
+                  <Link to={`/reports?user=${member.email}`}>
                     <FaIcons.FaReply />
                   </Link>
                 </ListGroup.Item>
@@ -75,12 +89,18 @@ const Members = () => {
                     type="email"
                     ref={newUserRef}
                     required
-                    placeholder="Enter new email"
-                    disabled={loading}
+                    placeholder={
+                      state.tempUser?.type === "manager"
+                        ? "Enter new email"
+                        : state.tempUser?.messId
+                        ? "Access Denied"
+                        : "Connect with mess manager"
+                    }
+                    disabled={loading || state.tempUser?.type !== "manager"}
                   />
 
                   <Button
-                    disabled={loading}
+                    disabled={loading || state.tempUser?.type !== "manager"}
                     className="w-100 mt-3"
                     type="submit"
                   >

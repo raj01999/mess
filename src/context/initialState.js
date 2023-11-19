@@ -11,7 +11,7 @@ const getUser = () => {
 
 const initialState = {
   sidebar: false,
-  info: "meal",
+  info: "fund",
   currentUser: getUser(),
   tempUser: null,
 };

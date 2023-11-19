@@ -13,6 +13,7 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [userType, setUserType] = useState("member");
   const [messName, setMessName] = useState("");
+  const [name, setName] = useState("");
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
@@ -34,6 +35,7 @@ export default function Signup() {
               name: messName,
               users: [
                 {
+                  name: name,
                   email: email,
                   type: userType,
                   messName: messName,
@@ -46,27 +48,25 @@ export default function Signup() {
         }, 300);
 
         await state.func.setUser({
+          name: name,
           email: email,
           type: userType,
           messName: messName,
           messId: messId,
-          meals: {},
-          funds: {},
         });
       } else if (userType === "member") {
         await state.func.setUser({
+          name: name,
           email: email,
           type: userType,
           messName: null,
           messId: null,
-          meals: {},
-          funds: {},
         });
       }
 
       navigate("/");
     } catch (err) {
-      setError(err.message);
+      setError(err.code);
     }
 
     setLoading(false);
@@ -84,6 +84,17 @@ export default function Signup() {
               <h2 className="text-center mb-4">Sign Up</h2>
               {error && <Alert variant="danger">{error}</Alert>}
               <Form onSubmit={handleSubmit}>
+                <Form.Group id="email">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                    }}
+                    required
+                  />
+                </Form.Group>
                 <Form.Group id="email">
                   <Form.Label>Email</Form.Label>
                   <Form.Control

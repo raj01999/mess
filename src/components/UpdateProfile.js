@@ -39,7 +39,7 @@ export default function UpdateProfile() {
         navigate("/");
       })
       .catch((e) => {
-        setError(e.message);
+        setError(e.code);
       })
       .finally(() => {
         setLoading(false);

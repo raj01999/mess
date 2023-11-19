@@ -66,17 +66,23 @@ const StateProvider = ({ reducer, initialState, children }) => {
   async function getUserByEmail(email) {
     const q = query(collection(db, "users"), where("email", "==", email));
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+    return querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[0];
   }
 
   async function setMess(mess, id) {
     await setDoc(doc(db, "messes", id), mess);
   }
 
+  async function getUsersByMessId(id) {
+    const q = query(collection(db, "users"), where("messId", "==", id));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
+      setCurrentUser(user);
       if (user) {
-        setCurrentUser(user);
         localStorage.setItem("currentUser", JSON.stringify(user));
       } else {
         localStorage.removeItem("currentUser");
@@ -99,6 +105,7 @@ const StateProvider = ({ reducer, initialState, children }) => {
     setUser,
     getUserByEmail,
     setMess,
+    getUsersByMessId,
   };
 
   return (

@@ -49,7 +49,7 @@ function App() {
         .then((res) => {
           dispatch({
             type: actionType.SET_TEMP_USER,
-            tempUser: res[0],
+            tempUser: res,
           });
         })
         .catch((err) => {

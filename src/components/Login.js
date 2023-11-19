@@ -20,7 +20,7 @@ export default function Login() {
       await state.func.login(emailRef.current.value, passwordRef.current.value);
       navigate("/");
     } catch (e) {
-      setError(e.message);
+      setError(e.code);
     }
 
     setLoading(false);
